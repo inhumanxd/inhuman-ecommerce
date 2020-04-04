@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block 'content' %}
+    <br><br>
+    <!--================Cart Area =================-->
+    <section class="cart_area">
+        <div class="container">
+            <div class="cart_inner">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Product</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Total</th>
+                                <th scope="col">Remove</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in object.items.all %}
+                            <tr>
+                                <td>
+                                    <div class="media">
+                                        <div class="d-flex">
+                                            <img src="{% static 'img/cart.jpg' %}" alt="">
+                                        </div>
+                                        <div class="media-body">
+                                            <p>{{product.item.title}}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    {% if product.item.discount_price %}
+                                    <h5>${{product.item.discount_price}}</h5>
+                                    {% else %}
+                                    <h5>${{product.item.price}}</h5>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div style="color:black" class="product_count">
+                                        <a style="color:grey" href="{% url 'remove-single-item-from-cart' product.item.slug %}"><i class="fa fa-minus mr-2" aria-hidden="true"></i></a>
+                                        {{product.quantity}}  
+                                        <a style="color:grey" href="{% url 'add-single-item-in-cart' product.item.slug %}"><i class="fa fa-plus ml-2" aria-hidden="true"></i></a>
+                                        
+                                    </div>
+                                </td>
+                                <td>
+                                    {% if product.item.discount_price %}
+                                        <h5>${{ product.get_total_discount_item_price}}</h5>
+                                    {% else %}
+                                        <h5>${{ product.get_total_discount_item_price}}</h5>
+                                    {% endif %}    
+                                </td>
+                                <td>
+                                    <a style="color:black" href="{% url 'remove-from-cart' product.item.slug %}"><i class="fa fa-trash fa-2x ml-3" aria-hidden="true"></i></a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4"> <b> Your cart is EMPTY! </b></td>
+                                <td> <a href="/" class="btn btn-primary"> Continue Shopping </a></td>
+                            </tr>
+                            {% endfor %}
+                            {% if object.get_total %}
+                            <tr>
+                                <td>
+                                    <a href="/" class="btn btn-primary"> Continue Shopping </a>
+                                </td>
+                                <td>
+                                    
+                                </td>
+                                <td>
+
+                                </td>
+                                <td>
+                                    <h5>Subtotal</h5>
+                                </td>
+                                <td>
+                                    <h5>${{object.get_total}} (18% Tax)</h5>
+                                </td>
+                            </tr>
+                            <tr>
+                            <form action = "order_confirmation" method="POST">
+                                {% csrf_token %}
+
+                                <td colspan="3">
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Email address</label>
+                                        <input type="email" class="form-control" name="emailID" required id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                                        
+                                      </div>
+                                      
+                                </td>
+                                <td></td>
+                                <td><button type="submit" class="btn btn-primary mt-2">Submit</button></td> 
+                            </form>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--================End Cart Area =================-->
+
+{% endblock %}    
